@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAN YOU BEAT THE CHALLENGE? - Modal Verbs Game (CAN, CAN'T, COULD, COULDN'T)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            turquoise: '#00F5D4',
+                            skyblue: '#00BBF9',
+                            purple: '#9B5DE5',
+                            pink: '#F15BB5',
+                            yellow: '#FEE440',
+                            orange: '#FF9F1C',
+                            bg: '#F4F7FE'
+                        }
+                    },
+                    fontFamily: {
+                        game: ['Fredoka', 'Comic Sans MS', 'Chalkboard SE', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;900&display=swap');
+        body {
+            font-family: 'Fredoka', 'Comic Sans MS', sans-serif;
+            background-color: #EBF4FF;
+            background-image: radial-gradient(#00BBF9 1.5px, transparent 1.5px), radial-gradient(#9B5DE5 1.5px, #EBF4FF 1.5px);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+        }
+
+        .comic-border {
+            border: 4px solid #1E293B;
+            box-shadow: 6px 6px 0px #1E293B;
+        }
+
+        .comic-btn {
+            border: 3px solid #1E293B;
+            box-shadow: 4px 4px 0px #1E293B;
+            transition: all 0.1s ease;
+        }
+
+        .comic-btn:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #1E293B;
+        }
+
+        .comic-btn:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #1E293B;
+        }
+
+        .badge-pop {
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            animation: fall 3s infinite linear;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #E2E8F0;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #9B5DE5;
+            border-radius: 8px;
+            border: 2px solid #1E293B;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between selection:bg-brand-yellow">
+
+    <!-- TOP NAVIGATION / HEADER BAR -->
+    <header class="bg-white comic-border m-3 p-3 lg:p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 z-10 sticky top-2 shadow-xl">
+        <div class="flex items-center gap-3">
+            <div class="bg-brand-yellow p-2 rounded-xl comic-border flex items-center justify-center cursor-pointer hover:bg-brand-orange transition" onclick="showScreen('screen-main-menu')">
+                <!-- Zap Icon -->
+                <svg class="w-8 h-8 text-slate-900" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13 2L3 14h7v8l10-12h-7L13 2z"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-xl lg:text-2xl font-black tracking-wide text-brand-purple uppercase drop-shadow">CAN YOU BEAT THE CHALLENGE?</h1>
+                <p class="text-xs text-slate-500 font-bold hidden sm:block">Modal Verbs: CAN, CAN'T, COULD & COULDN'T Masterclass</p>
+            </div>
+        </div>
+
+        <!-- Global Status & Controls -->
+        <div class="flex items-center gap-2 sm:gap-4 flex-wrap">
+            <div class="bg-brand-turquoise/20 px-3 py-1.5 rounded-xl border-2 border-slate-900 font-bold text-xs sm:text-sm flex items-center gap-2">
+                <span class="text-slate-600">Active Team:</span>
+                <span id="header-active-team-name" class="text-slate-900 font-black">Team Alpha</span>
+            </div>
+
+            <button id="sound-toggle-btn" onclick="toggleSound()" class="comic-btn bg-brand-yellow px-3 py-1.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2">
+                <span id="sound-icon-holder" class="w-5 h-5 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-slate-900" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                </span>
+                <span id="sound-text" class="hidden md:inline">Sound ON</span>
+            </button>
+
+            <button onclick="showScreen('screen-main-menu')" class="comic-btn bg-brand-pink text-white px-3 py-1.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                Menu
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="container mx-auto px-3 my-2 flex-grow flex flex-col justify-center max-w-6xl">
+
+        <!-- ================= 1. MAIN MENU SCREEN ================= -->
+        <section id="screen-main-menu" class="screen-view">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <!-- Left Banner & Visuals -->
+                <div class="lg:col-span-7 bg-white comic-border rounded-3xl p-6 lg:p-8 relative overflow-hidden text-center lg:text-left">
+                    <div class="inline-block bg-brand-pink text-white text-xs font-black uppercase px-3 py-1 rounded-full mb-3 tracking-widest border-2 border-slate-900">High School ESL Grammar Master</div>
+                    <h2 class="text-4xl lg:text-6xl font-black text-slate-900 leading-tight mb-4">
+                        BEAT THE <span class="text-brand-purple underline decoration-brand-yellow decoration-wavy">CHALLENGE!</span>
+                    </h2>
+                    <p class="text-slate-600 font-semibold text-base lg:text-lg mb-6">
+                        Master present & past abilities and polite requests using <span class="bg-brand-turquoise px-2 py-0.5 rounded border border-slate-900 font-black text-slate-900">CAN</span>, <span class="bg-brand-pink text-white px-2 py-0.5 rounded border border-slate-900 font-black">CAN'T</span>, <span class="bg-brand-yellow px-2 py-0.5 rounded border border-slate-900 font-black text-slate-900">COULD</span> & <span class="bg-brand-orange text-white px-2 py-0.5 rounded border border-slate-900 font-black">COULDN'T</span>!
+                    </p>
+
+                    <!-- Vector Banner Illustration -->
+                    <div class="w-full h-48 bg-brand-turquoise/10 rounded-2xl border-2 border-dashed border-slate-300 flex items-center justify-center p-4 mb-2">
+                        <svg class="w-full h-full max-h-40" viewBox="0 0 300 120" fill="none">
+                            <circle cx="60" cy="50" r="30" fill="#00BBF9" stroke="#1E293B" stroke-width="3"/>
+                            <path d="M 45 45 Q 50 35 60 45 Q 70 35 75 45" stroke="#1E293B" stroke-width="3" fill="none"/>
+                            <circle cx="50" cy="48" r="4" fill="#1E293B"/>
+                            <circle cx="70" cy="48" r="4" fill="#1E293B"/>
+                            <path d="M 50 62 Q 60 72 70 62" stroke="#1E293B" stroke-width="3" fill="none"/>
+                            <path d="M 35 55 L 15 80 L 45 75 Z" fill="#FF9F1C" stroke="#1E293B" stroke-width="2"/>
+                            
+                            <!-- Shield Badge -->
+                            <polygon points="150,15 185,32 185,78 150,105 115,78 115,32" fill="#FEE440" stroke="#1E293B" stroke-width="4"/>
+                            <text x="150" y="55" font-family="Fredoka, sans-serif" font-weight="900" font-size="22" fill="#9B5DE5" text-anchor="middle">CAN</text>
+                            <text x="150" y="80" font-family="Fredoka, sans-serif" font-weight="900" font-size="18" fill="#FF9F1C" text-anchor="middle">COULD</text>
+                            
+                            <circle cx="240" cy="50" r="30" fill="#F15BB5" stroke="#1E293B" stroke-width="3"/>
+                            <circle cx="230" cy="48" r="4" fill="#1E293B"/>
+                            <circle cx="250" cy="48" r="4" fill="#1E293B"/>
+                            <path d="M 230 65 Q 240 55 250 65" stroke="#1E293B" stroke-width="3" fill="none"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Right Menu Buttons -->
+                <div class="lg:col-span-5 flex flex-col gap-3.5">
+                    <button onclick="startChallenge(1)" class="comic-btn bg-brand-turquoise text-slate-900 font-black text-xl py-4 px-6 rounded-2xl flex items-center justify-between">
+                        <span class="flex items-center gap-3">
+                            <svg class="w-6 h-6 text-slate-900 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            Start Game
+                        </span>
+                        <span class="bg-white border-2 border-slate-900 text-xs px-2.5 py-1 rounded-lg">5 Challenges</span>
+                    </button>
+
+                    <button onclick="showScreen('screen-teams')" class="comic-btn bg-brand-yellow text-slate-900 font-black text-xl py-4 px-6 rounded-2xl flex items-center justify-between">
+                        <span class="flex items-center gap-3">
+                            <svg class="w-6 h-6 text-slate-900 fill-current" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            Choose Teams
+                        </span>
+                        <span id="menu-team-count-badge" class="bg-slate-900 text-white text-xs px-2.5 py-1 rounded-full">5 Teams</span>
+                    </button>
+
+                    <button onclick="showScreen('screen-instructions')" class="comic-btn bg-brand-skyblue text-slate-900 font-black text-xl py-4 px-6 rounded-2xl flex items-center justify-between">
+                        <span class="flex items-center gap-3">
+                            <svg class="w-6 h-6 text-slate-900 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+                            How to Play
+                        </span>
+                    </button>
+
+                    <button onclick="showScreen('screen-scoreboard')" class="comic-btn bg-brand-purple text-white font-black text-xl py-4 px-6 rounded-2xl flex items-center justify-between">
+                        <span class="flex items-center gap-3">
+                            <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+                            Leaderboard
+                        </span>
+                    </button>
+
+                    <div class="flex gap-3">
+                        <button onclick="resetScoresConfirm()" class="comic-btn bg-slate-200 text-slate-700 font-bold text-sm py-3 px-4 rounded-xl flex-1 flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                            Reset Scores
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= 2. TEAM MANAGEMENT SCREEN ================= -->
+        <section id="screen-teams" class="screen-view hidden">
+            <div class="bg-white comic-border rounded-3xl p-6 lg:p-8">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b-2 border-slate-200">
+                    <div>
+                        <h2 class="text-3xl font-black text-brand-purple">Choose & Setup Teams</h2>
+                        <p class="text-slate-500 font-semibold text-sm">Add, rename, or select active competing teams for the game session.</p>
+                    </div>
+                    <button onclick="addNewTeamPrompt()" class="comic-btn bg-brand-turquoise font-black px-4 py-2 rounded-xl text-sm flex items-center gap-2">
+                        <svg class="w-5 h-5 fill-current text-slate-900" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        Add New Team
+                    </button>
+                </div>
+
+                <!-- Teams Grid -->
+                <div id="teams-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                    <!-- Dynamic Team Cards Rendered Here -->
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t-2 border-slate-100">
+                    <button onclick="showScreen('screen-main-menu')" class="comic-btn bg-slate-200 font-bold px-6 py-2.5 rounded-xl">
+                        Back to Menu
+                    </button>
+                    <button onclick="startChallenge(1)" class="comic-btn bg-brand-yellow font-black px-6 py-2.5 rounded-xl flex items-center gap-2">
+                        Ready to Play!
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42L16.86 11H5v2z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= 3. HOW TO PLAY / INSTRUCTIONS SCREEN ================= -->
+        <section id="screen-instructions" class="screen-view hidden">
+            <div class="bg-white comic-border rounded-3xl p-6 lg:p-8">
+                <h2 class="text-3xl font-black text-brand-purple mb-4">How To Play The Game</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-brand-turquoise/10 p-4 rounded-2xl border-2 border-brand-turquoise">
+                        <h3 class="font-black text-lg text-slate-900 mb-1 flex items-center gap-2">
+                            <svg class="w-6 h-6 text-brand-purple fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                            Grammar Rules Guide
+                        </h3>
+                        <p class="text-xs sm:text-sm font-semibold text-slate-700 leading-relaxed">
+                            • <strong class="text-brand-purple font-black">CAN / CAN'T</strong>: Present abilities & inabilities (<em>"I can swim now, but I can't fly."</em>)<br>
+                            • <strong class="text-brand-orange font-black">COULD / COULDN'T</strong>: Past abilities & inabilities (<em>"When I was five, I could ride a bike."</em>)<br>
+                            • <strong class="text-brand-skyblue font-black">REQUESTS</strong>: Use <em>"Could you...?"</em> for extra polite requests, and <em>"Can you...?"</em> for informal ones.
+                        </p>
+                    </div>
+
+                    <div class="bg-brand-yellow/20 p-4 rounded-2xl border-2 border-brand-yellow">
+                        <h3 class="font-black text-lg text-slate-900 mb-1 flex items-center gap-2">
+                            <svg class="w-6 h-6 text-brand-orange fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            Scoring & Controls
+                        </h3>
+                        <p class="text-xs sm:text-sm font-semibold text-slate-700 leading-relaxed">
+                            Each correct interactive answer grants <strong class="text-slate-900 font-black">100 points</strong> to the active team.<br>
+                            Teachers can use the <strong>Teacher Control Panel</strong> at the bottom to award/subtract points, reveal answers, or skip questions.
+                        </p>
+                    </div>
+                </div>
+
+                <h3 class="font-black text-xl text-slate-900 mb-3">5 Epic Challenges</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
+                    <div class="bg-slate-50 p-3 rounded-xl border-2 border-slate-200">
+                        <div class="font-black text-brand-purple text-xs uppercase">Challenge 1</div>
+                        <div class="font-bold text-slate-800 text-sm mb-1">What Can You Do?</div>
+                        <p class="text-xs text-slate-500 font-semibold">Present ability & inability visual tasks.</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border-2 border-slate-200">
+                        <div class="font-black text-brand-skyblue text-xs uppercase">Challenge 2</div>
+                        <div class="font-bold text-slate-800 text-sm mb-1">Back In Time</div>
+                        <p class="text-xs text-slate-500 font-semibold">Past abilities using COULD and COULDN'T.</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border-2 border-slate-200">
+                        <div class="font-black text-brand-pink text-xs uppercase">Challenge 3</div>
+                        <div class="font-bold text-slate-800 text-sm mb-1">Can or Could?</div>
+                        <p class="text-xs text-slate-500 font-semibold">Distinguish between present and past tense context.</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border-2 border-slate-200">
+                        <div class="font-black text-brand-orange text-xs uppercase">Challenge 4</div>
+                        <div class="font-bold text-slate-800 text-sm mb-1">Polite Requests</div>
+                        <p class="text-xs text-slate-500 font-semibold">Master polite requests with CAN YOU & COULD YOU.</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border-2 border-slate-200">
+                        <div class="font-black text-emerald-600 text-xs uppercase">Challenge 5</div>
+                        <div class="font-bold text-slate-800 text-sm mb-1">Super Team</div>
+                        <p class="text-xs text-slate-500 font-semibold">4-sentence team combo oral/written battle!</p>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button onclick="showScreen('screen-main-menu')" class="comic-btn bg-brand-yellow font-black px-8 py-3 rounded-2xl text-lg">
+                        Got It! Let's Play!
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= 4. GAME PLAY SCREEN (CHALLENGES 1-4) ================= -->
+        <section id="screen-gameplay" class="screen-view hidden">
+            <!-- Game Top Nav / Mode Selector Tabs -->
+            <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+                <div class="flex gap-1.5 overflow-x-auto pb-1 max-w-full">
+                    <button onclick="startChallenge(1)" id="tab-c1" class="comic-btn px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm bg-brand-turquoise">
+                        C1: What Can You Do?
+                    </button>
+                    <button onclick="startChallenge(2)" id="tab-c2" class="comic-btn px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm bg-white">
+                        C2: Back In Time
+                    </button>
+                    <button onclick="startChallenge(3)" id="tab-c3" class="comic-btn px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm bg-white">
+                        C3: Can or Could?
+                    </button>
+                    <button onclick="startChallenge(4)" id="tab-c4" class="comic-btn px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm bg-white">
+                        C4: Polite Requests
+                    </button>
+                    <button onclick="startChallenge(5)" id="tab-c5" class="comic-btn px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm bg-white">
+                        C5: Super Team
+                    </button>
+                </div>
+
+                <div class="bg-white border-2 border-slate-900 px-3 py-1 rounded-xl text-xs font-black text-slate-700">
+                    Question <span id="q-current-num" class="text-brand-purple">1</span> / <span id="q-total-num">30</span>
+                </div>
+            </div>
+
+            <!-- Main Interactive Card -->
+            <div class="bg-white comic-border rounded-3xl p-4 lg:p-6 mb-4 relative">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    
+                    <!-- Left: Dynamic Vector Illustration Display -->
+                    <div class="lg:col-span-5 bg-slate-50 border-4 border-slate-900 rounded-2xl p-4 flex flex-col items-center justify-center min-h-[240px] relative overflow-hidden bg-gradient-to-b from-sky-100 to-white">
+                        <div id="illustration-container" class="w-full h-48 lg:h-56 flex items-center justify-center">
+                            <!-- Dynamic Vector Graphics Injected Here -->
+                        </div>
+                        <div id="illustration-caption" class="mt-2 text-xs font-bold text-slate-500 uppercase tracking-widest text-center">
+                            Visual Clue
+                        </div>
+                    </div>
+
+                    <!-- Right: Question and Multiple Choice Options -->
+                    <div class="lg:col-span-7 flex flex-col justify-between">
+                        <div>
+                            <!-- Category Badge -->
+                            <div class="flex items-center gap-2 mb-2">
+                                <span id="challenge-badge" class="bg-brand-purple text-white text-xs font-black px-3 py-1 rounded-full uppercase border border-slate-900">
+                                    Challenge 1
+                                </span>
+                                <span id="hint-tag" class="text-xs font-bold text-slate-500">
+                                    Read carefully and choose!
+                                </span>
+                            </div>
+
+                            <!-- Question Prompt Text -->
+                            <h2 id="question-text" class="text-2xl sm:text-3xl font-black text-slate-900 mb-6 leading-tight">
+                                Loading question...
+                            </h2>
+
+                            <!-- Options Container -->
+                            <div id="options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                                <!-- Option Buttons Dynamically Generated Here -->
+                            </div>
+                        </div>
+
+                        <!-- Instant Feedback Bar -->
+                        <div id="feedback-bar" class="hidden comic-border p-3 rounded-2xl flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div id="feedback-icon-box" class="w-8 h-8 rounded-full flex items-center justify-center bg-white border-2 border-slate-900">
+                                    <!-- Dynamic SVG Icon Inserted via JS -->
+                                </div>
+                                <div>
+                                    <span id="feedback-text" class="font-black text-sm sm:text-base block">Correct Answer! +100 Points</span>
+                                    <span id="feedback-explanation" class="text-xs font-bold block opacity-90">Explanation here...</span>
+                                </div>
+                            </div>
+                            <button onclick="nextQuestion()" class="comic-btn bg-brand-yellow font-black text-xs px-3 py-1.5 rounded-lg flex items-center gap-1">
+                                Next
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42L16.86 11H5v2z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TEACHER CONTROL PANEL -->
+            <div class="bg-slate-900 text-white comic-border rounded-2xl p-3 lg:p-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-brand-yellow font-black text-xs uppercase tracking-wider flex items-center gap-1">
+                        <svg class="w-4 h-4 fill-current text-brand-yellow" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8s0 0 0 0z"/></svg>
+                        Teacher Panel:
+                    </span>
+                    <!-- Active Team Selector -->
+                    <select id="teacher-team-select" onchange="changeActiveTeam(this.value)" class="bg-slate-800 text-white border border-slate-600 rounded-lg text-xs font-bold px-2 py-1.5 focus:outline-none focus:border-brand-yellow">
+                        <!-- Dynamic Team Options -->
+                    </select>
+                </div>
+
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button onclick="awardPoints(100)" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black px-2.5 py-1.5 rounded-lg border border-slate-800">
+                        +100 Pts
+                    </button>
+                    <button onclick="awardPoints(-50)" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-black px-2.5 py-1.5 rounded-lg border border-slate-800">
+                        -50 Pts
+                    </button>
+                    <button onclick="revealAnswer()" class="bg-brand-skyblue text-slate-900 text-xs font-black px-2.5 py-1.5 rounded-lg border border-slate-800">
+                        Reveal
+                    </button>
+                    <button onclick="nextQuestion()" class="bg-brand-yellow text-slate-900 text-xs font-black px-2.5 py-1.5 rounded-lg border border-slate-800">
+                        Skip ➔
+                    </button>
+                    <button onclick="restartChallenge()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg">
+                        Restart Round
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= 5. CHALLENGE 5: BUILD YOUR SUPER TEAM ================= -->
+        <section id="screen-superhero" class="screen-view hidden">
+            <div class="bg-white comic-border rounded-3xl p-6 lg:p-8">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b-2 border-slate-100">
+                    <div>
+                        <span class="bg-emerald-500 text-white text-xs font-black px-3 py-1 rounded-full uppercase border border-slate-900">
+                            Challenge 5 Mode
+                        </span>
+                        <h2 class="text-3xl font-black text-slate-900 mt-1">Build Your Super Team!</h2>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-bold text-slate-400">Team Grammar Battle</span>
+                        <div class="text-brand-purple font-black text-lg" id="superhero-team-display">Team Alpha's Turn</div>
+                    </div>
+                </div>
+
+                <p class="text-slate-600 font-semibold text-sm mb-6">
+                    Select a hero! Your team must produce <strong>4 complete sentences</strong>: 
+                    <span class="text-brand-purple font-black">2 using CAN or CAN'T</span> (present abilities) and 
+                    <span class="text-brand-orange font-black">2 using COULD or COULDN'T</span> (past abilities).
+                </p>
+
+                <!-- Superhero Roster Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <!-- Hero 1 -->
+                    <div onclick="selectHeroCard(1)" id="hero-card-1" class="comic-btn bg-slate-50 rounded-2xl p-4 border-4 border-slate-900 cursor-pointer text-center relative">
+                        <div class="w-full h-36 flex items-center justify-center mb-2">
+                            <svg class="w-28 h-28" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" fill="#00BBF9" stroke="#1E293B" stroke-width="3"/>
+                                <polygon points="50,15 60,35 80,35 65,50 70,70 50,58 30,70 35,50 20,35 40,35" fill="#FEE440" stroke="#1E293B" stroke-width="2"/>
+                                <circle cx="40" cy="45" r="4" fill="#1E293B"/>
+                                <circle cx="60" cy="45" r="4" fill="#1E293B"/>
+                                <path d="M 40 60 Q 50 70 60 60" stroke="#1E293B" stroke-width="3" fill="none"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-black text-lg text-slate-900">Captain Astro</h3>
+                        <p class="text-xs text-slate-500 font-bold mb-2">Cosmic Traveler</p>
+                        <div class="bg-white p-2 rounded-xl border border-slate-300 text-xs font-semibold text-left space-y-1">
+                            <div>⚡ <strong>Present:</strong> Can fly fast / Can't breathe underwater</div>
+                            <div>⏳ <strong>Past (age 5):</strong> Could speak Alien / Couldn't control lasers</div>
+                        </div>
+                    </div>
+
+                    <!-- Hero 2 -->
+                    <div onclick="selectHeroCard(2)" id="hero-card-2" class="comic-btn bg-slate-50 rounded-2xl p-4 border-4 border-slate-900 cursor-pointer text-center relative">
+                        <div class="w-full h-36 flex items-center justify-center mb-2">
+                            <svg class="w-28 h-28" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" fill="#F15BB5" stroke="#1E293B" stroke-width="3"/>
+                                <rect x="30" y="38" width="40" height="14" rx="7" fill="#1E293B"/>
+                                <circle cx="40" cy="45" r="3" fill="#00F5D4"/>
+                                <circle cx="60" cy="45" r="3" fill="#00F5D4"/>
+                                <path d="M 38 65 Q 50 55 62 65" stroke="#1E293B" stroke-width="3" fill="none"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-black text-lg text-slate-900">Shadow Blaze</h3>
+                        <p class="text-xs text-slate-500 font-bold mb-2">Stealth Ninja</p>
+                        <div class="bg-white p-2 rounded-xl border border-slate-300 text-xs font-semibold text-left space-y-1">
+                            <div>⚡ <strong>Present:</strong> Can turn invisible / Can't lift trucks</div>
+                            <div>⏳ <strong>Past (age 6):</strong> Could climb walls / Couldn't read minds</div>
+                        </div>
+                    </div>
+
+                    <!-- Hero 3 -->
+                    <div onclick="selectHeroCard(3)" id="hero-card-3" class="comic-btn bg-slate-50 rounded-2xl p-4 border-4 border-slate-900 cursor-pointer text-center relative">
+                        <div class="w-full h-36 flex items-center justify-center mb-2">
+                            <svg class="w-28 h-28" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" fill="#00F5D4" stroke="#1E293B" stroke-width="3"/>
+                                <path d="M 30 35 L 50 15 L 70 35 Z" fill="#FF9F1C" stroke="#1E293B" stroke-width="2"/>
+                                <circle cx="40" cy="50" r="4" fill="#1E293B"/>
+                                <circle cx="60" cy="50" r="4" fill="#1E293B"/>
+                                <path d="M 40 65 Q 50 75 60 65" stroke="#1E293B" stroke-width="3" fill="none"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-black text-lg text-slate-900">Titan Nova</h3>
+                        <p class="text-xs text-slate-500 font-bold mb-2">Power Dynamo</p>
+                        <div class="bg-white p-2 rounded-xl border border-slate-300 text-xs font-semibold text-left space-y-1">
+                            <div>⚡ <strong>Present:</strong> Can break boulders / Can't fly</div>
+                            <div>⏳ <strong>Past (age 4):</strong> Could lift cars / Couldn't speak English</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sentence Verification Panel -->
+                <div class="bg-brand-yellow/20 border-2 border-brand-yellow p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <div class="font-black text-slate-900 text-sm">Teacher Evaluation & Point Awarding:</div>
+                        <p class="text-xs text-slate-600 font-semibold">Did the team correctly form 4 sentences with CAN, CAN'T, COULD, and COULDN'T?</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="awardPoints(200)" class="comic-btn bg-emerald-400 text-slate-900 font-black text-xs px-4 py-2 rounded-xl">
+                            All 4 Correct! (+200 Pts)
+                        </button>
+                        <button onclick="awardPoints(100)" class="comic-btn bg-brand-yellow text-slate-900 font-black text-xs px-4 py-2 rounded-xl">
+                            Partial (+100 Pts)
+                        </button>
+                        <button onclick="showScreen('screen-scoreboard')" class="comic-btn bg-brand-purple text-white font-black text-xs px-4 py-2 rounded-xl">
+                            View Scoreboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= 6. TEAM SCOREBOARD / LEADERBOARD ================= -->
+        <section id="screen-scoreboard" class="screen-view hidden">
+            <div class="bg-white comic-border rounded-3xl p-6 lg:p-8">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b-2 border-slate-200">
+                    <div>
+                        <h2 class="text-3xl font-black text-brand-purple">Team Scoreboard & Ranks</h2>
+                        <p class="text-slate-500 font-semibold text-sm">Live scoreboard with automatic ranking and point tracking.</p>
+                    </div>
+                    <button onclick="triggerVictoryModal()" class="comic-btn bg-brand-yellow font-black px-4 py-2 rounded-xl text-sm flex items-center gap-2">
+                        <svg class="w-5 h-5 fill-current text-slate-900" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+                        Declare Winner
+                    </button>
+                </div>
+
+                <!-- Scoreboard Cards -->
+                <div id="scoreboard-list" class="space-y-3 mb-6">
+                    <!-- Dynamic Score Cards Injected Here -->
+                </div>
+
+                <div class="flex justify-between items-center pt-4 border-t-2 border-slate-100 flex-wrap gap-3">
+                    <button onclick="showScreen('screen-main-menu')" class="comic-btn bg-slate-200 font-bold px-6 py-2.5 rounded-xl">
+                        Back to Menu
+                    </button>
+                    <button onclick="startChallenge(1)" class="comic-btn bg-brand-turquoise font-black px-6 py-2.5 rounded-xl flex items-center gap-2">
+                        Continue Playing
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42L16.86 11H5v2z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- VICTORY CELEBRATION MODAL -->
+    <div id="victory-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white comic-border rounded-3xl p-6 lg:p-8 max-w-lg w-full text-center relative overflow-hidden badge-pop">
+            <div id="confetti-holder"></div>
+            
+            <div class="w-20 h-20 mx-auto mb-3 text-brand-yellow flex items-center justify-center bg-brand-purple rounded-full border-4 border-slate-900">
+                <svg class="w-12 h-12 fill-current" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+            </div>
+
+            <div class="inline-block bg-brand-yellow text-slate-900 font-black text-xs px-3 py-1 rounded-full uppercase border border-slate-900 mb-2">
+                CHAMPIONS OF MODAL VERBS
+            </div>
+            
+            <h2 id="winner-team-name" class="text-4xl font-black text-brand-purple mb-1">
+                TEAM ALPHA
+            </h2>
+            <p class="text-slate-500 font-bold text-sm mb-4">Total Score: <span id="winner-team-score" class="text-slate-900 font-black text-lg">0</span> Points</p>
+
+            <div class="bg-brand-turquoise/20 p-4 rounded-2xl border-2 border-brand-turquoise mb-6">
+                <p class="text-slate-800 font-extrabold text-base">
+                    "Congratulations! You've mastered CAN, CAN'T, COULD, and COULDN'T!"
+                </p>
+            </div>
+
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeVictoryModal()" class="comic-btn bg-slate-200 font-bold px-5 py-2.5 rounded-xl text-sm">
+                    Close
+                </button>
+                <button onclick="resetScoresConfirm()" class="comic-btn bg-brand-yellow font-black px-5 py-2.5 rounded-xl text-sm flex items-center gap-1.5">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                    Play Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-3 text-xs font-bold text-slate-500">
+        CAN YOU BEAT THE CHALLENGE? &bull; High School ESL Gamified Learning Platform
+    </footer>
+
+
+    <!-- GAME LOGIC AND ENGINE SCRIPT -->
+    <script>
+        /* ==========================================================================
+           1. GAME STATE & LOCAL STORAGE INITIALIZATION
+           ========================================================================== */
+        const DEFAULT_TEAMS = [
+            { id: 't1', name: 'Team Alpha', score: 0 },
+            { id: 't2', name: 'Team Beta', score: 0 },
+            { id: 't3', name: 'Team Gamma', score: 0 },
+            { id: 't4', name: 'Team Delta', score: 0 },
+            { id: 't5', name: 'Team Omega', score: 0 }
+        ];
+
+        let gameState = {
+            teams: JSON.parse(localStorage.getItem('can_game_teams')) || DEFAULT_TEAMS,
+            activeTeamId: localStorage.getItem('can_game_active_team') || 't1',
+            soundEnabled: localStorage.getItem('can_game_sound') !== 'false',
+            currentChallenge: 1,
+            currentQuestionIdx: 0
+        };
+
+        /* ==========================================================================
+           2. EXPANDED 30-QUESTION BANK (CHALLENGES 1 - 4)
+           ========================================================================== */
+        const questionBank = [
+            // --- CHALLENGE 1: WHAT CAN YOU DO? (Present Abilities / Inabilities) ---
+            {
+                id: 1, challenge: 1,
+                text: "Look at the swimmer in the pool. Complete the sentence:",
+                svgType: "swimmer",
+                options: ["She can swim very fast.", "She can't swim.", "She could fly yesterday.", "She couldn't swim."],
+                answer: 0,
+                explanation: "Use CAN for present ability when someone knows how to perform an action.",
+                hint: "Swimmers love water!"
+            },
+            {
+                id: 2, challenge: 1,
+                text: "Look at the musician with his guitar. Complete the sentence:",
+                svgType: "guitarist",
+                options: ["He can't hear music.", "He can play the guitar.", "He couldn't play.", "He can fly."],
+                answer: 1,
+                explanation: "Use CAN for present musical skill.",
+                hint: "Notice the instrument!"
+            },
+            {
+                id: 3, challenge: 1,
+                text: "Look at the bird soaring high. Complete the sentence:",
+                svgType: "bird",
+                options: ["It can fly high in the sky.", "It can't fly.", "It couldn't move.", "It can drive a car."],
+                answer: 0,
+                explanation: "Birds possess the present ability to fly.",
+                hint: "Wings are made for flying!"
+            },
+            {
+                id: 4, challenge: 1,
+                text: "Look at the fish underwater and the bicycle on land. Complete:",
+                svgType: "fish",
+                options: ["A fish can ride a bicycle.", "A fish can't ride a bicycle.", "A fish could drive.", "A fish can fly."],
+                answer: 1,
+                explanation: "Use CAN'T for something impossible in the present.",
+                hint: "Fish have fins, not legs!"
+            },
+            {
+                id: 5, challenge: 1,
+                text: "Observe the athlete kicking the soccer ball:",
+                svgType: "soccer",
+                options: ["They can play soccer well.", "They can't touch the ball.", "They couldn't run.", "They can fly."],
+                answer: 0,
+                explanation: "CAN expresses present athletic ability.",
+                hint: "He is wearing soccer boots!"
+            },
+            {
+                id: 6, challenge: 1,
+                text: "Look at the chef in the kitchen:",
+                svgType: "chef",
+                options: ["She can't cook food.", "She can cook delicious meals.", "She could fix cars.", "She can fly."],
+                answer: 1,
+                explanation: "CAN indicates a learned professional skill.",
+                hint: "Chefs prepare great food!"
+            },
+            {
+                id: 7, challenge: 1,
+                text: "Observe the newborn baby in the crib:",
+                svgType: "baby",
+                options: ["A baby can drive a car.", "A baby can't drive a car.", "A baby could swim.", "A baby can fly."],
+                answer: 1,
+                explanation: "CAN'T is used for present physical inability.",
+                hint: "Babies are too small to drive!"
+            },
+
+            // --- CHALLENGE 2: BACK IN TIME (Past Abilities: COULD & COULDN'T) ---
+            {
+                id: 8, challenge: 2,
+                text: "When I was five years old, I ______ ride a bicycle without training wheels.",
+                svgType: "kid_bike",
+                options: ["could", "can", "couldn't to", "can't"],
+                answer: 0,
+                explanation: "COULD expresses general ability in the past ('when I was five').",
+                hint: "Look at the past age context (5 years old)!"
+            },
+            {
+                id: 9, challenge: 2,
+                text: "When she was three years old, she ______ drive a real car.",
+                svgType: "baby",
+                options: ["could", "couldn't", "can't to", "can"],
+                answer: 1,
+                explanation: "COULDN'T expresses past inability.",
+                hint: "Three-year-olds cannot drive cars!"
+            },
+            {
+                id: 10, challenge: 2,
+                text: "He ______ swim across the lake when he was only six years old.",
+                svgType: "swimmer",
+                options: ["could", "can", "could to", "can't"],
+                answer: 0,
+                explanation: "COULD indicates a past talent at age six.",
+                hint: "Past age landmark = COULD."
+            },
+            {
+                id: 11, challenge: 2,
+                text: "They ______ speak English fluently when they were newborn babies.",
+                svgType: "baby",
+                options: ["could", "couldn't", "can", "could to"],
+                answer: 1,
+                explanation: "COULDN'T indicates past inability for babies.",
+                hint: "Babies cannot speak languages!"
+            },
+            {
+                id: 12, challenge: 2,
+                text: "My grandfather ______ run marathons when he was a young man.",
+                svgType: "soccer",
+                options: ["could", "can", "couldn't", "is can"],
+                answer: 0,
+                explanation: "COULD describes past youthful ability.",
+                hint: "Past time frame: when he was young."
+            },
+            {
+                id: 13, challenge: 2,
+                text: "Before I studied French last year, I ______ understand the songs.",
+                svgType: "student",
+                options: ["could", "couldn't", "can", "can't"],
+                answer: 1,
+                explanation: "COULDN'T describes a past limitation before studying.",
+                hint: "Before learning = past lack of skill."
+            },
+            {
+                id: 14, challenge: 2,
+                text: "When my brother was two, he ______ read books yet.",
+                svgType: "student",
+                options: ["could", "couldn't", "can", "is couldn't"],
+                answer: 1,
+                explanation: "COULDN'T expresses past inability at age two.",
+                hint: "Toddlers haven't learned to read!"
+            },
+
+            // --- CHALLENGE 3: CAN OR COULD? (Present vs. Past Context) ---
+            {
+                id: 15, challenge: 3,
+                text: "I ______ play the piano now, but I ______ play it when I was four.",
+                svgType: "guitarist",
+                options: ["can / couldn't", "could / can't", "can / can", "couldn't / could"],
+                answer: 0,
+                explanation: "Use CAN for present ('now') and COULDN'T for past ('when I was four').",
+                hint: "Now = Present (CAN), Age four = Past (COULDN'T)."
+            },
+            {
+                id: 16, challenge: 3,
+                text: "When I was younger, I ______ run very fast.",
+                svgType: "soccer",
+                options: ["can", "could", "can to", "could to"],
+                answer: 1,
+                explanation: "'When I was younger' indicates a past habit/ability (COULD).",
+                hint: "'Younger' is in the past!"
+            },
+            {
+                id: 17, challenge: 3,
+                text: "She ______ speak three languages today.",
+                svgType: "student",
+                options: ["can", "couldn't to", "could when", "was can"],
+                answer: 0,
+                explanation: "'Today' signals present time (CAN).",
+                hint: "Look for the present keyword 'today'."
+            },
+            {
+                id: 18, challenge: 3,
+                text: "I ______ ride a bike now, but I ______ ride one when I was three.",
+                svgType: "kid_bike",
+                options: ["can / couldn't", "could / can't", "can't / can", "could / couldn't"],
+                answer: 0,
+                explanation: "CAN for present ('now'), COULDN'T for past ('when I was three').",
+                hint: "Contrast present ('now') vs past ('when three')."
+            },
+            {
+                id: 19, challenge: 3,
+                text: "Ten years ago, people ______ buy smart watches.",
+                svgType: "astronomer",
+                options: ["can", "couldn't", "can't", "could to"],
+                answer: 1,
+                explanation: "'Ten years ago' requires past modal COULDN'T.",
+                hint: "Ten years ago = Past."
+            },
+            {
+                id: 20, challenge: 3,
+                text: "Listen! She ______ play the violin beautifully right now.",
+                svgType: "guitarist",
+                options: ["can", "could", "couldn't", "was can"],
+                answer: 0,
+                explanation: "'Right now' specifies present action/ability (CAN).",
+                hint: "'Right now' = Present tense."
+            },
+            {
+                id: 21, challenge: 3,
+                text: "When my sister was small, she ______ sleep without her toy rocket.",
+                svgType: "baby",
+                options: ["can't", "couldn't", "can", "is couldn't"],
+                answer: 1,
+                explanation: "'When my sister was small' signals past time (COULDN'T).",
+                hint: "Past time landmark."
+            },
+
+            // --- CHALLENGE 4: POLITE REQUEST BATTLE (CAN YOU vs. COULD YOU) ---
+            {
+                id: 22, challenge: 4,
+                text: "You are in class and want to ask your teacher politely to open the window:",
+                svgType: "classroom",
+                options: ["Could you open the window, please?", "Can you open the window?", "Could you to open window?", "You can open window?"],
+                answer: 0,
+                explanation: "'Could you... please?' is the most polite modal form for requests in formal settings.",
+                hint: "'Could you... please?' is polite and standard!"
+            },
+            {
+                id: 23, challenge: 4,
+                text: "Asking a close classmate informally for a pencil:",
+                svgType: "student",
+                options: ["Can you pass me the pencil?", "Could you to pass pencil?", "Can you passing pencil?", "Do you could pass?"],
+                answer: 0,
+                explanation: "'Can you...?' is great for informal requests among friends.",
+                hint: "Informal friendly request!"
+            },
+            {
+                id: 24, challenge: 4,
+                text: "Asking a teacher politely to repeat a difficult sentence:",
+                svgType: "classroom",
+                options: ["Could you repeat that, please?", "Can you repeat now?", "Could you repeating that?", "You could repeat?"],
+                answer: 0,
+                explanation: "'Could you repeat that, please?' is very polite for requests.",
+                hint: "Polite requests use COULD + base verb."
+            },
+            {
+                id: 25, challenge: 4,
+                text: "Asking a friend to help carry heavy books:",
+                svgType: "student",
+                options: ["Can you help me with these books?", "Could you to help me?", "Can you helping me?", "You can help me?"],
+                answer: 0,
+                explanation: "'Can you help me...?' is standard and direct.",
+                hint: "Direct friendly help request."
+            },
+            {
+                id: 26, challenge: 4,
+                text: "Making a polite request to a librarian in a library:",
+                svgType: "student",
+                options: ["Could you help me find this book, please?", "Can you find book now?", "Could you finding book?", "You could find book?"],
+                answer: 0,
+                explanation: "'Could you... please?' shows polite respect in public places.",
+                hint: "Formal polite setting."
+            },
+            {
+                id: 27, challenge: 4,
+                text: "Which request is MORE POLITE when talking to an adult or boss?",
+                svgType: "chef",
+                options: ["Could you please lend me your pen?", "Can you give me your pen?", "Give me pen now.", "You give me pen?"],
+                answer: 0,
+                explanation: "'Could you...' is higher in politeness than 'Can you...'",
+                hint: "COULD YOU is more polite than CAN YOU!"
+            },
+            {
+                id: 28, challenge: 4,
+                text: "Asking a teammate during a group project:",
+                svgType: "student",
+                options: ["Could you send me the file, please?", "Can you to send file?", "Sending file can you?", "Could you sending file?"],
+                answer: 0,
+                explanation: "COULD + subject + base verb + please.",
+                hint: "Modals are followed by base form verbs."
+            },
+            {
+                id: 29, challenge: 4,
+                text: "Asking a stranger on the street for directions:",
+                svgType: "astronomer",
+                options: ["Could you tell me the way to the station, please?", "Can you tell path now?", "Tell path please.", "Could you to tell path?"],
+                answer: 0,
+                explanation: "'Could you... please?' is best when speaking with strangers.",
+                hint: "Strangers appreciate polite COULD YOU phrasing."
+            },
+            {
+                id: 30, challenge: 4,
+                text: "Asking your brother informally to turn down the music:",
+                svgType: "guitarist",
+                options: ["Can you turn down the music?", "Could you turning music?", "Can you to turn down?", "You could turn down?"],
+                answer: 0,
+                explanation: "CAN YOU is suitable for family and close peers.",
+                hint: "Informal request with family."
+            }
+        ];
+
+        /* ==========================================================================
+           3. OFFLINE SVG ILLUSTRATION GENERATOR
+           ========================================================================== */
+        function getSVGIllustration(type) {
+            const svgHeader = `<svg class="w-full h-full max-h-48" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">`;
+            const svgFooter = `</svg>`;
+
+            switch (type) {
+                case 'swimmer':
+                    return svgHeader + `
+                        <rect width="200" height="160" rx="16" fill="#E0F2FE"/>
+                        <path d="M0 110 Q 50 100 100 110 T 200 110 L 200 160 L 0 160 Z" fill="#00BBF9" opacity="0.6"/>
+                        <path d="M0 125 Q 50 115 100 125 T 200 125 L 200 160 L 0 160 Z" fill="#0077B6"/>
+                        <circle cx="120" cy="90" r="16" fill="#FFB703" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M 60 105 L 110 95 L 140 100" stroke="#1E293B" stroke-width="8" stroke-linecap="round"/>
+                        <rect x="115" y="85" width="14" height="8" rx="4" fill="#1E293B"/>
+                    ` + svgFooter;
+
+                case 'guitarist':
+                    return svgHeader + `
+                        <rect width="200" height="160" rx="16" fill="#F3E8FF"/>
+                        <path d="M 90 90 Q 70 60 100 50 Q 130 60 110 90 Q 130 120 100 125 Q 70 120 90 90 Z" fill="#FF9F1C" stroke="#1E293B" stroke-width="3"/>
+                        <circle cx="100" cy="85" r="10" fill="#1E293B"/>
+                        <rect x="96" y="20" width="8" height="40" fill="#D97706" stroke="#1E293B" stroke-width="2"/>
+                        <circle cx="60" cy="50" r="18" fill="#FEE440" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M 50 80 Q 60 110 80 110" stroke="#1E293B" stroke-width="6" stroke-linecap="round"/>
+                    ` + svgFooter;
+
+                case 'bird':
+                    return svgHeader + `
+                        <rect width="200" height="160" rx="16" fill="#E0F2FE"/>
+                        <path d="M 30 50 Q 40 30 60 40 Q 80 20 100 40 Q 110 50 90 60 Z" fill="white"/>
+                        <path d="M 80 80 Q 120 50 150 70 Q 130 110 90 100 Z" fill="#F15BB5" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M 100 80 Q 120 40 140 85 Z" fill="#9B5DE5" stroke="#1E293B" stroke-width="3"/>
+                        <circle cx="135" cy="68" r="3" fill="#1E293B"/>
+                        <polygon points="150,68 165,72 150,78" fill="#FF9F1C" stroke="#1E293B" stroke-width="2"/>
+                    ` + svgFooter;
+
+                case 'fish':
+                    return svgHeader + `
+                        <rect width="200" height="160" rx="16" fill="#E0F2FE"/>
+                        <ellipse cx="100" cy="80" rx="45" ry="28" fill="#FF9F1C" stroke="#1E293B" stroke-width="3"/>
+                        <polygon points="140,80 170,60 165,100" fill="#FF9F1C" stroke="#1E293B" stroke-width="3"/>
+                        <circle cx="75" cy="72" r="4" fill="#1E293B"/>
+                        <path d="M 70 88 Q 78 95 85 88" stroke="#1E293B" stroke-width="2" fill="none"/>
+                        <circle cx="50" cy="50" r="6" fill="white" stroke="#00BBF9" stroke-width="2"/>
+                    ` + svgFooter;
+
+                case 'soccer':
+                    return svgHeader + `
+                        <rect width="200" height="160" rx="16" fill="#DCFCE7"/>
+                        <line x1="100" y1="0" x2="100" y2="160" stroke="#86EFAC" stroke-width="4"/>
+                        <circle cx="130" cy="110" r="18" fill="white" stroke="#1E293B" stroke-width="3"/>
+                        <polygon points="130,100 138,106 135,115 125,115 122,106" fill="#1E293B"/>
+                        <path d="M 70 120 L 105 115" stroke="#9B5DE5" stroke-width="10" stroke-linecap="round"/>
+                    ` + svgFooter;
+
+                case 'chef':
+                    return svgHeader + `
+                        <rect width="200" height="160" rx="16" fill="#FEF3C7"/>
+                        <path d="M 80 50 Q 70 20 100 20 Q 130 20 120 50 Z" fill="white" stroke="#1E293B" stroke-width="3"/>
+                        <rect x="82" y="48" width="36" height="14" fill="white" stroke="#1E293B" stroke-width="3"/>
+                        <circle cx="100" cy="78" r="18" fill="#FEE440" stroke="#1E293B" stroke-width="3"/>
+                        <ellipse cx="145" cy="115" rx="22" ry="8" fill="#475569" stroke="#1E293B" stroke-width="3"/>
+                    ` + svgFooter;
+
+                case 'baby':
+                    return svgHeader + `
+                        <rect width="200" height="160" rx="16" fill="#FCE7F3"/>
+                        <circle cx="100" cy="70" r="28" fill="#FED7AA" stroke="#1E293B" stroke-width="3"/>
+                        <circle cx="90" cy="65" r="4" fill="#1E293B"/>
+                        <circle cx="110" cy="65" r="4" fill="#1E293B"/>
+                        <path d="M 92 80 Q 100 88 108 80" stroke="#1E293B" stroke-width="2" fill="none"/>
+                        <!-- Pacifier -->
+                        <circle cx="100" cy="82" r="6" fill="#F15BB5" stroke="#1E293B" stroke-width="2"/>
+                    ` + svgFooter;
+
+                case 'kid_bike':
+                    return svgHeader + `
+                        <rect width="200" height="160" rx="16" fill="#E0F2FE"/>
+                        <circle cx="60" cy="110" r="20" fill="#94A3B8" stroke="#1E293B" stroke-width="3"/>
+                        <circle cx="140" cy="110" r="20" fill="#94A3B8" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M 60 110 L 90 70 L 130 70 L 140 110 M 90 70 L 110 110" stroke="#F15BB5" stroke-width="4" fill="none"/>
+                        <circle cx="95" cy="45" r="14" fill="#FEE440" stroke="#1E293B" stroke-width="3"/>
+                    ` + svgFooter;
+
+                case 'student':
+                    return svgHeader + `
+                        <rect width="200" height="160" rx="16" fill="#F0FDFA"/>
+                        <rect x="60" y="60" width="80" height="60" rx="8" fill="#00BBF9" stroke="#1E293B" stroke-width="3"/>
+                        <line x1="100" y1="60" x2="100" y2="120" stroke="#1E293B" stroke-width="3"/>
+                        <circle cx="100" cy="35" r="16" fill="#FEE440" stroke="#1E293B" stroke-width="3"/>
+                    ` + svgFooter;
+
+                case 'classroom':
+                    return svgHeader + `
+                        <rect width="200" height="160" rx="16" fill="#F8FAFC"/>
+                        <rect x="30" y="20" width="140" height="80" rx="6" fill="#065F46" stroke="#1E293B" stroke-width="3"/>
+                        <text x="100" y="65" font-family="Fredoka, sans-serif" font-weight="900" font-size="16" fill="#A7F3D0" text-anchor="middle">ENGLISH CLASS</text>
+                    ` + svgFooter;
+
+                default:
+                    return svgHeader + `
+                        <rect width="200" height="160" rx="16" fill="#F1F5F9"/>
+                        <circle cx="100" cy="70" r="35" fill="#00F5D4" stroke="#1E293B" stroke-width="3"/>
+                        <text x="100" y="78" font-family="Fredoka, sans-serif" font-weight="900" font-size="20" fill="#1E293B" text-anchor="middle">MODALS</text>
+                    ` + svgFooter;
+            }
+        }
+
+        /* ==========================================================================
+           4. AUDIO SYNTHESIS ENGINE (WEB AUDIO API - OFFLINE FRIENDLY)
+           ========================================================================== */
+        const AudioEngine = {
+            ctx: null,
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+            playCorrect() {
+                if (!gameState.soundEnabled) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1);
+                osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            },
+            playWrong() {
+                if (!gameState.soundEnabled) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.exponentialRampToValueAtTime(130.81, now + 0.25);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            },
+            playVictory() {
+                if (!gameState.soundEnabled) return;
+                this.init();
+                const notes = [440, 554.37, 659.25, 880];
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    const now = this.ctx.currentTime + (idx * 0.12);
+                    osc.frequency.setValueAtTime(freq, now);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                });
+            }
+        };
+
+        function toggleSound() {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            localStorage.setItem('can_game_sound', gameState.soundEnabled);
+            updateSoundUI();
+        }
+
+        function updateSoundUI() {
+            const iconHolder = document.getElementById('sound-icon-holder');
+            const text = document.getElementById('sound-text');
+            if (gameState.soundEnabled) {
+                iconHolder.innerHTML = `<svg class="w-5 h-5 text-slate-900 fill-current" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
+                text.textContent = 'Sound ON';
+            } else {
+                iconHolder.innerHTML = `<svg class="w-5 h-5 text-slate-900 fill-current" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>`;
+                text.textContent = 'Sound OFF';
+            }
+        }
+
+        /* ==========================================================================
+           5. NAVIGATION & SCREEN MANAGER
+           ========================================================================== */
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen-view').forEach(s => s.classList.add('hidden'));
+            const target = document.getElementById(screenId);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+            renderHeaderAndTeams();
+            if (screenId === 'screen-scoreboard') renderScoreboard();
+            if (screenId === 'screen-teams') renderTeamsSetup();
+        }
+
+        function startChallenge(challengeNum) {
+            gameState.currentChallenge = challengeNum;
+            
+            // Tab styling update
+            for(let i=1; i<=5; i++) {
+                const tab = document.getElementById(`tab-c${i}`);
+                if(tab) {
+                    if(i === challengeNum) {
+                        tab.className = "comic-btn px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm bg-brand-turquoise";
+                    } else {
+                        tab.className = "comic-btn px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm bg-white";
+                    }
+                }
+            }
+
+            if (challengeNum === 5) {
+                showScreen('screen-superhero');
+                updateSuperheroView();
+            } else {
+                const matchingIdx = questionBank.findIndex(q => q.challenge === challengeNum);
+                gameState.currentQuestionIdx = matchingIdx !== -1 ? matchingIdx : 0;
+                showScreen('screen-gameplay');
+                renderQuestion();
+            }
+        }
+
+        /* ==========================================================================
+           6. QUESTION RENDERING & INTERACTION LOGIC
+           ========================================================================== */
+        function renderQuestion() {
+            const q = questionBank[gameState.currentQuestionIdx];
+            if (!q) return;
+
+            // Reset Feedback
+            const feedbackBar = document.getElementById('feedback-bar');
+            feedbackBar.classList.add('hidden');
+
+            // Counter
+            document.getElementById('q-current-num').textContent = gameState.currentQuestionIdx + 1;
+            document.getElementById('q-total-num').textContent = questionBank.length;
+
+            // Badge & Hint
+            const badge = document.getElementById('challenge-badge');
+            badge.textContent = `Challenge ${q.challenge}`;
+            document.getElementById('hint-tag').textContent = q.hint || "Choose the best answer!";
+
+            // Question Text
+            document.getElementById('question-text').textContent = q.text;
+
+            // Render SVG Graphic
+            const imgContainer = document.getElementById('illustration-container');
+            imgContainer.innerHTML = getSVGIllustration(q.svgType);
+
+            // Render Option Buttons
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'comic-btn bg-white hover:bg-brand-turquoise/20 text-slate-900 font-bold text-left p-3.5 rounded-2xl border-2 border-slate-900 flex items-center justify-between transition-all';
+                btn.innerHTML = `
+                    <span class="text-sm sm:text-base">${opt}</span>
+                    <span class="w-6 h-6 rounded-full border-2 border-slate-900 bg-slate-100 flex items-center justify-center text-xs font-black">${String.fromCharCode(65 + idx)}</span>
+                `;
+                btn.onclick = () => handleAnswerSelect(idx, btn);
+                container.appendChild(btn);
+            });
+
+            renderTeacherControls();
+        }
+
+        function handleAnswerSelect(selectedIdx, btnElement) {
+            const q = questionBank[gameState.currentQuestionIdx];
+            const feedbackBar = document.getElementById('feedback-bar');
+            const feedbackText = document.getElementById('feedback-text');
+            const feedbackExplanation = document.getElementById('feedback-explanation');
+            const feedbackIconBox = document.getElementById('feedback-icon-box');
+
+            // Disable option buttons
+            const allBtns = document.getElementById('options-container').querySelectorAll('button');
+            allBtns.forEach(b => b.disabled = true);
+
+            if (selectedIdx === q.answer) {
+                // Correct
+                AudioEngine.playCorrect();
+                btnElement.classList.remove('bg-white');
+                btnElement.classList.add('bg-emerald-300', 'border-emerald-700');
+                
+                feedbackBar.className = "comic-border p-3 rounded-2xl flex items-center justify-between bg-emerald-100 border-emerald-500 text-emerald-900";
+                feedbackIconBox.innerHTML = `<svg class="w-5 h-5 text-emerald-600 fill-current" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+                feedbackText.textContent = "CORRECT! +100 Points Awarded!";
+                feedbackExplanation.textContent = q.explanation || "";
+                feedbackBar.classList.remove('hidden');
+
+                awardPoints(100, false);
+            } else {
+                // Incorrect
+                AudioEngine.playWrong();
+                btnElement.classList.remove('bg-white');
+                btnElement.classList.add('bg-rose-300', 'border-rose-700');
+
+                if (allBtns[q.answer]) {
+                    allBtns[q.answer].classList.add('bg-emerald-200');
+                }
+
+                feedbackBar.className = "comic-border p-3 rounded-2xl flex items-center justify-between bg-rose-100 border-rose-500 text-rose-900";
+                feedbackIconBox.innerHTML = `<svg class="w-5 h-5 text-rose-600 fill-current" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 13.41 12z"/></svg>`;
+                feedbackText.textContent = `Oops! Correct answer: "${q.options[q.answer]}"`;
+                feedbackExplanation.textContent = q.explanation || "";
+                feedbackBar.classList.remove('hidden');
+            }
+        }
+
+        function nextQuestion() {
+            if (gameState.currentQuestionIdx < questionBank.length - 1) {
+                gameState.currentQuestionIdx++;
+                renderQuestion();
+            } else {
+                showScreen('screen-scoreboard');
+            }
+        }
+
+        function revealAnswer() {
+            const q = questionBank[gameState.currentQuestionIdx];
+            const allBtns = document.getElementById('options-container').querySelectorAll('button');
+            if (allBtns[q.answer]) {
+                allBtns[q.answer].classList.add('bg-emerald-300', 'border-emerald-700');
+            }
+        }
+
+        function restartChallenge() {
+            startChallenge(gameState.currentChallenge);
+        }
+
+        /* ==========================================================================
+           7. TEAM SCORE MANAGEMENT & TEACHER CONTROLS
+           ========================================================================== */
+        function getActiveTeam() {
+            return gameState.teams.find(t => t.id === gameState.activeTeamId) || gameState.teams[0];
+        }
+
+        function changeActiveTeam(teamId) {
+            gameState.activeTeamId = teamId;
+            localStorage.setItem('can_game_active_team', teamId);
+            renderHeaderAndTeams();
+        }
+
+        function awardPoints(pts, playSound = true) {
+            const team = getActiveTeam();
+            if (team) {
+                team.score = Math.max(0, team.score + pts);
+                saveTeamsToStorage();
+                renderHeaderAndTeams();
+                renderScoreboard();
+                if (playSound) {
+                    if (pts > 0) AudioEngine.playCorrect();
+                    else AudioEngine.playWrong();
+                }
+            }
+        }
+
+        function saveTeamsToStorage() {
+            localStorage.setItem('can_game_teams', JSON.stringify(gameState.teams));
+        }
+
+        function renderHeaderAndTeams() {
+            const activeTeam = getActiveTeam();
+            const headerName = document.getElementById('header-active-team-name');
+            if (headerName && activeTeam) {
+                headerName.textContent = activeTeam.name;
+            }
+
+            const menuBadge = document.getElementById('menu-team-count-badge');
+            if (menuBadge) {
+                menuBadge.textContent = `${gameState.teams.length} Teams`;
+            }
+
+            renderTeacherControls();
+        }
+
+        function renderTeacherControls() {
+            const select = document.getElementById('teacher-team-select');
+            if (!select) return;
+            select.innerHTML = '';
+            gameState.teams.forEach(team => {
+                const opt = document.createElement('option');
+                opt.value = team.id;
+                opt.textContent = `${team.name} (${team.score} pts)`;
+                if (team.id === gameState.activeTeamId) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        function addNewTeamPrompt() {
+            const name = prompt("Enter new team name:", `Team ${String.fromCharCode(65 + gameState.teams.length)}`);
+            if (name && name.trim() !== "") {
+                const newTeam = {
+                    id: 't_' + Date.now(),
+                    name: name.trim(),
+                    score: 0
+                };
+                gameState.teams.push(newTeam);
+                saveTeamsToStorage();
+                renderTeamsSetup();
+                renderHeaderAndTeams();
+            }
+        }
+
+        function renameTeam(teamId) {
+            const team = gameState.teams.find(t => t.id === teamId);
+            if (!team) return;
+            const newName = prompt("Rename Team:", team.name);
+            if (newName && newName.trim() !== "") {
+                team.name = newName.trim();
+                saveTeamsToStorage();
+                renderTeamsSetup();
+                renderHeaderAndTeams();
+            }
+        }
+
+        function removeTeam(teamId) {
+            if (gameState.teams.length <= 1) {
+                alert("You must keep at least one active team!");
+                return;
+            }
+            if (confirm("Are you sure you want to remove this team?")) {
+                gameState.teams = gameState.teams.filter(t => t.id !== teamId);
+                if (gameState.activeTeamId === teamId) {
+                    gameState.activeTeamId = gameState.teams[0].id;
+                }
+                saveTeamsToStorage();
+                renderTeamsSetup();
+                renderHeaderAndTeams();
+            }
+        }
+
+        function renderTeamsSetup() {
+            const container = document.getElementById('teams-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            gameState.teams.forEach(team => {
+                const isActive = team.id === gameState.activeTeamId;
+                const card = document.createElement('div');
+                card.className = `comic-border p-4 rounded-2xl flex flex-col justify-between ${isActive ? 'bg-brand-yellow/30 border-brand-yellow' : 'bg-slate-50'}`;
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-black text-lg text-slate-900">${team.name}</span>
+                            ${isActive ? '<span class="bg-brand-yellow text-slate-900 text-xs font-black px-2 py-0.5 rounded-full border border-slate-900">ACTIVE</span>' : ''}
+                        </div>
+                        <div class="text-2xl font-black text-brand-purple mb-4">${team.score} Points</div>
+                    </div>
+                    <div class="flex gap-2 flex-wrap">
+                        <button onclick="changeActiveTeam('${team.id}')" class="comic-btn bg-brand-turquoise text-xs font-black px-3 py-1.5 rounded-lg flex-1">
+                            Select Active
+                        </button>
+                        <button onclick="renameTeam('${team.id}')" class="comic-btn bg-slate-200 text-xs font-bold p-1.5 rounded-lg">
+                            <svg class="w-4 h-4 fill-current text-slate-700" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        </button>
+                        <button onclick="removeTeam('${team.id}')" class="comic-btn bg-rose-200 text-rose-800 text-xs font-bold p-1.5 rounded-lg">
+                            <svg class="w-4 h-4 fill-current text-rose-800" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderScoreboard() {
+            const list = document.getElementById('scoreboard-list');
+            if (!list) return;
+            list.innerHTML = '';
+
+            const sorted = [...gameState.teams].sort((a, b) => b.score - a.score);
+
+            sorted.forEach((team, idx) => {
+                const row = document.createElement('div');
+                row.className = `comic-border p-4 rounded-2xl flex items-center justify-between gap-4 ${idx === 0 ? 'bg-amber-100 border-amber-400' : 'bg-white'}`;
+                
+                let rankBadge = `<span class="font-black text-slate-500 w-8">#${idx + 1}</span>`;
+                if (idx === 0) rankBadge = `<div class="w-8 h-8 rounded-full bg-yellow-400 border-2 border-slate-900 flex items-center justify-center font-black text-slate-900">1</div>`;
+                if (idx === 1) rankBadge = `<div class="w-8 h-8 rounded-full bg-slate-300 border-2 border-slate-900 flex items-center justify-center font-black text-slate-900">2</div>`;
+                if (idx === 2) rankBadge = `<div class="w-8 h-8 rounded-full bg-amber-600 border-2 border-slate-900 flex items-center justify-center font-black text-white">3</div>`;
+
+                row.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        ${rankBadge}
+                        <div>
+                            <h4 class="font-black text-lg text-slate-900">${team.name}</h4>
+                            <div class="w-32 bg-slate-200 h-2 rounded-full overflow-hidden mt-1">
+                                <div class="bg-brand-purple h-full" style="width: ${Math.min(100, (team.score / 1500) * 100)}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-2xl font-black text-slate-900">${team.score}</span>
+                        <span class="text-xs text-slate-500 font-bold block">PTS</span>
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function resetScoresConfirm() {
+            if (confirm("Reset all team scores to 0?")) {
+                gameState.teams.forEach(t => t.score = 0);
+                saveTeamsToStorage();
+                renderHeaderAndTeams();
+                renderScoreboard();
+                if (document.getElementById('screen-teams')) renderTeamsSetup();
+            }
+        }
+
+        /* ==========================================================================
+           8. CHALLENGE 5 INTERACTION & VICTORY CELEBRATIONS
+           ========================================================================== */
+        function updateSuperheroView() {
+            const team = getActiveTeam();
+            const display = document.getElementById('superhero-team-display');
+            if (display && team) {
+                display.textContent = `${team.name}'s Turn`;
+            }
+        }
+
+        function selectHeroCard(cardNum) {
+            for(let i=1; i<=3; i++) {
+                const card = document.getElementById(`hero-card-${i}`);
+                if(card) {
+                    if (i === cardNum) {
+                        card.classList.add('bg-brand-turquoise/20', 'border-brand-turquoise');
+                    } else {
+                        card.classList.remove('bg-brand-turquoise/20', 'border-brand-turquoise');
+                    }
+                }
+            }
+        }
+
+        function triggerVictoryModal() {
+            const sorted = [...gameState.teams].sort((a, b) => b.score - a.score);
+            const winner = sorted[0];
+
+            document.getElementById('winner-team-name').textContent = winner.name;
+            document.getElementById('winner-team-score').textContent = winner.score;
+            document.getElementById('victory-modal').classList.remove('hidden');
+
+            AudioEngine.playVictory();
+            generateConfetti();
+        }
+
+        function closeVictoryModal() {
+            document.getElementById('victory-modal').classList.add('hidden');
+        }
+
+        function generateConfetti() {
+            const holder = document.getElementById('confetti-holder');
+            holder.innerHTML = '';
+            const colors = ['#00F5D4', '#00BBF9', '#9B5DE5', '#F15BB5', '#FEE440'];
+            
+            for (let i = 0; i < 40; i++) {
+                const p = document.createElement('div');
+                p.className = 'confetti';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                p.style.animationDelay = Math.random() * 2 + 's';
+                holder.appendChild(p);
+            }
+        }
+
+        /* ==========================================================================
+           9. INITIALIZATION ON WINDOW LOAD
+           ========================================================================== */
+        window.onload = function() {
+            updateSoundUI();
+            renderHeaderAndTeams();
+            showScreen('screen-main-menu');
+        };
+    </script>
+</body>
+</html>
